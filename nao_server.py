@@ -36,6 +36,7 @@ class Robot:
     def __init__ (self):
         try:
             self.motionProxy = ALProxy("ALMotion", "127.0.0.1", 9559)
+            self.motionProxy.setBreathEnabled('Body', False)
             print("motion proxy started")
 
         except Exception, e:
@@ -101,6 +102,14 @@ class Robot:
 
         cv2.imwrite("/home/nao/img.jpg", self.img)
 
+    def walk (self, x, y, theta, frequency = 0.7, walk_time = 4):
+        self.motionProxy.setWalkTargetVelocity (x, y, theta, frequency)
+
+        time.sleep (walk_time)
+
+        self.motionProxy.setWalkTargetVelocity (0, 0, 0, frequency)
+        self.motionProxy.setBreathEnabled('Body', False)
+
     def play_football (self):
         def find_max_bounding_box(mask):
             result = np.array(mask)
@@ -159,7 +168,10 @@ class Robot:
 
         self.make_and_save_photo ()
 
-        mask = cv2.inRange (self.img, tuple (self.lth), tuple (self.hth))
+        mask_ = cv2.inRange (self.img, tuple (self.lth), tuple (self.hth))
+
+        kernel = np.ones((5, 5), np.uint8)
+        mask = cv2.erode (mask_, kernel, iterations = 1)
 
         (bbox, success) = find_max_bounding_box(mask)
         print ("detection success: ", str(success))
@@ -168,12 +180,12 @@ class Robot:
             point = (bbox[0][0] + bbox[1][0]) // 2
             print ("point" + str(point))
 
-            cv2.imwrite("/home/nao/mask.jpg", mask)
+            #cv2.imwrite("/home/nao/mask.jpg", mask)
 
             X = 0.0
             Y = 0.0
             rotation_time = 2.0
-            Theta = - float(point - 320) / 700 / rotation_time
+            Theta = float(point - 320) / 640 / rotation_time
             Frequency = 1.0  # low speed
 
             print ("theta" + str(Theta))
@@ -254,6 +266,7 @@ class Robot:
 
             self.motionProxy.angleInterpolation(names, keys, times, True)
 
+        self.motionProxy.setBreathEnabled('Body', False)
         #self.motionProxy.wbEnable(True)
 
     def greet (self):
@@ -1587,12 +1600,176 @@ class Robot:
         except BaseException, err:
             print err
 
+    def bow(self):
+        print("bow")
+
+        names = list()
+        times = list()
+        keys = list()
+
+        names.append("HeadPitch")
+        times.append([0.4, 0.64, 0.92, 1.56])
+        keys.append([[-0.177985, [3, -0.146667, 0], [3, 0.08, 0]], [0.0383972, [3, -0.08, 0], [3, 0.0933333, 0]],
+                     [0.0383972, [3, -0.0933333, 0], [3, 0.213333, 0]], [-0.137881, [3, -0.213333, 0], [3, 0, 0]]])
+
+        names.append("HeadYaw")
+        times.append([0.4, 0.64, 0.92])
+        keys.append([[0.0245859, [3, -0.146667, 0], [3, 0.08, 0]], [0, [3, -0.08, 0], [3, 0.0933333, 0]],
+                     [0, [3, -0.0933333, 0], [3, 0, 0]]])
+
+        names.append("LAnklePitch")
+        times.append([0.64, 0.92, 1.48])
+        keys.append(
+            [[0.0813439, [3, -0.226667, 0], [3, 0.0933333, 0]], [0.122678, [3, -0.0933333, 0], [3, 0.186667, 0]],
+             [0.093532, [3, -0.186667, 0], [3, 0, 0]]])
+
+        names.append("LAnkleRoll")
+        times.append([0.64, 0.92, 1.48])
+        keys.append(
+            [[-0.128898, [3, -0.226667, 0], [3, 0.0933333, 0]], [-0.10427, [3, -0.0933333, 0], [3, 0.186667, 0]],
+             [-0.12728, [3, -0.186667, 0], [3, 0, 0]]])
+
+        names.append("LElbowRoll")
+        times.append([0.4, 0.64, 0.92, 1.12])
+        keys.append([[-1.33616, [3, -0.146667, 0], [3, 0.08, 0]], [-1.54462, [3, -0.08, 0], [3, 0.0933333, 0]],
+                     [-1.12804, [3, -0.0933333, -0.0984172], [3, 0.0666667, 0.070298]],
+                     [-1.03847, [3, -0.0666667, 0], [3, 0, 0]]])
+
+        names.append("LElbowYaw")
+        times.append([0.4, 0.64, 0.92, 1.36, 1.56])
+        keys.append([[-0.966378, [3, -0.146667, 0], [3, 0.08, 0]], [-0.944223, [3, -0.08, 0], [3, 0.0933333, 0]],
+                     [-1.033, [3, -0.0933333, 0.0887745], [3, 0.146667, -0.139503]],
+                     [-1.82561, [3, -0.146667, 0], [3, 0.0666667, 0]], [-1.82561, [3, -0.0666667, 0], [3, 0, 0]]])
+
+        names.append("LHand")
+        times.append([0.4, 0.92, 1.36, 1.56])
+        keys.append([[0.17, [3, -0.146667, 0], [3, 0.173333, 0]],
+                     [0.297615, [3, -0.173333, -0.0993056], [3, 0.146667, 0.0840278]],
+                     [0.72, [3, -0.146667, 0], [3, 0.0666667, 0]], [0.72, [3, -0.0666667, 0], [3, 0, 0]]])
+
+        names.append("LHipPitch")
+        times.append([0.64, 0.92, 1.48])
+        keys.append(
+            [[0.131882, [3, -0.226667, 0], [3, 0.0933333, 0]], [-0.091998, [3, -0.0933333, 0], [3, 0.186667, 0]],
+             [0.138102, [3, -0.186667, 0], [3, 0, 0]]])
+
+        names.append("LHipRoll")
+        times.append([0.64, 0.92, 1.48])
+        keys.append(
+            [[0.0981341, [3, -0.226667, 0], [3, 0.0933333, 0]], [0.0614019, [3, -0.0933333, 0], [3, 0.186667, 0]],
+             [0.104354, [3, -0.186667, 0], [3, 0, 0]]])
+
+        names.append("LHipYawPitch")
+        times.append([0.64, 0.92, 1.48])
+        keys.append(
+            [[-0.171766, [3, -0.226667, 0], [3, 0.0933333, 0]], [-0.190175, [3, -0.0933333, 0], [3, 0.186667, 0]],
+             [-0.16563, [3, -0.186667, 0], [3, 0, 0]]])
+
+        names.append("LKneePitch")
+        times.append([0.64, 0.92, 1.48])
+        keys.append(
+            [[-0.075124, [3, -0.226667, 0], [3, 0.0933333, 0]], [-0.039926, [3, -0.0933333, 0], [3, 0.186667, 0]],
+             [-0.0767419, [3, -0.186667, 0], [3, 0, 0]]])
+
+        names.append("LShoulderPitch")
+        times.append([0.4, 0.64, 0.92])
+        keys.append([[1.49723, [3, -0.146667, 0], [3, 0.08, 0]], [1.21999, [3, -0.08, 0], [3, 0.0933333, 0]],
+                     [1.2964, [3, -0.0933333, 0], [3, 0, 0]]])
+
+        names.append("LShoulderRoll")
+        times.append([0.4, 0.92])
+        keys.append([[0.280764, [3, -0.146667, 0], [3, 0.173333, 0]], [0.201692, [3, -0.173333, 0], [3, 0, 0]]])
+
+        names.append("LWristYaw")
+        times.append([0.4, 0.92, 1.36, 1.56])
+        keys.append([[-0.0873961, [3, -0.146667, 0], [3, 0.173333, 0]],
+                     [-1.13021, [3, -0.173333, 0.277605], [3, 0.146667, -0.234897]],
+                     [-1.6249, [3, -0.146667, 0], [3, 0.0666667, 0]], [-1.6249, [3, -0.0666667, 0], [3, 0, 0]]])
+
+        names.append("RAnklePitch")
+        times.append([0.64, 0.92, 1.48])
+        keys.append([[0.078192, [3, -0.226667, 0], [3, 0.0933333, 0]], [0.105888, [3, -0.0933333, 0], [3, 0.186667, 0]],
+                     [0.105888, [3, -0.186667, 0], [3, 0, 0]]])
+
+        names.append("RAnkleRoll")
+        times.append([0.64, 0.92, 1.48])
+        keys.append([[0.121144, [3, -0.226667, 0], [3, 0.0933333, 0]],
+                     [0.127364, [3, -0.0933333, -0.000766986], [3, 0.186667, 0.00153397]],
+                     [0.128898, [3, -0.186667, 0], [3, 0, 0]]])
+
+        names.append("RElbowRoll")
+        times.append([0.4, 0.64, 0.92, 1.12, 1.36, 1.56])
+        keys.append([[1.22102, [3, -0.146667, 0], [3, 0.08, 0]], [1.54462, [3, -0.08, 0], [3, 0.0933333, 0]],
+                     [1.44833, [3, -0.0933333, 0.0702495], [3, 0.0666667, -0.0501782]],
+                     [1.18333, [3, -0.0666667, 0], [3, 0.08, 0]], [1.26013, [3, -0.08, 0], [3, 0.0666667, 0]],
+                     [1.26013, [3, -0.0666667, 0], [3, 0, 0]]])
+
+        names.append("RElbowYaw")
+        times.append([0.4, 0.64, 0.92, 1.36, 1.56])
+        keys.append([[1.04009, [3, -0.146667, 0], [3, 0.08, 0]], [0.944223, [3, -0.08, 0], [3, 0.0933333, 0]],
+                     [1.04353, [3, -0.0933333, -0.099311], [3, 0.146667, 0.15606]],
+                     [1.92335, [3, -0.146667, 0], [3, 0.0666667, 0]], [1.92335, [3, -0.0666667, 0], [3, 0, 0]]])
+
+        names.append("RHand")
+        times.append([0.4, 0.92])
+        keys.append([[0.2496, [3, -0.146667, 0], [3, 0.173333, 0]], [0.8, [3, -0.173333, 0], [3, 0, 0]]])
+
+        names.append("RHipPitch")
+        times.append([0.64, 0.92, 1.48])
+        keys.append(
+            [[0.124296, [3, -0.226667, 0], [3, 0.0933333, 0]], [-0.128898, [3, -0.0933333, 0], [3, 0.186667, 0]],
+             [0.13495, [3, -0.186667, 0], [3, 0, 0]]])
+
+        names.append("RHipRoll")
+        times.append([0.64, 0.92, 1.48])
+        keys.append([[-0.090548, [3, -0.226667, 0], [3, 0.0933333, 0]],
+                     [-0.095066, [3, -0.0933333, 0.00118378], [3, 0.186667, -0.00236756]],
+                     [-0.101202, [3, -0.186667, 0], [3, 0, 0]]])
+
+        names.append("RHipYawPitch")
+        times.append([0.64, 0.92, 1.48])
+        keys.append(
+            [[-0.171766, [3, -0.226667, 0], [3, 0.0933333, 0]], [-0.190175, [3, -0.0933333, 0], [3, 0.186667, 0]],
+             [-0.16563, [3, -0.186667, 0], [3, 0, 0]]])
+
+        names.append("RKneePitch")
+        times.append([0.64, 0.92, 1.48])
+        keys.append(
+            [[-0.0813439, [3, -0.226667, 0], [3, 0.0933333, 0]], [0.0291878, [3, -0.0933333, 0], [3, 0.186667, 0]],
+             [-0.0735901, [3, -0.186667, 0], [3, 0, 0]]])
+
+        names.append("RShoulderPitch")
+        times.append([0.4, 0.64, 0.92])
+        keys.append([[1.4864, [3, -0.146667, 0], [3, 0.08, 0]], [1.21999, [3, -0.08, 0], [3, 0.0933333, 0]],
+                     [1.2858, [3, -0.0933333, 0], [3, 0, 0]]])
+
+        names.append("RShoulderRoll")
+        times.append([0.4, 0.92, 1.36, 1.56])
+        keys.append(
+            [[-0.170232, [3, -0.146667, 0], [3, 0.173333, 0]], [0.000233577, [3, -0.173333, 0], [3, 0.146667, 0]],
+             [-0.261799, [3, -0.146667, 0], [3, 0.0666667, 0]], [-0.261799, [3, -0.0666667, 0], [3, 0, 0]]])
+
+        names.append("RWristYaw")
+        times.append([0.4, 0.92, 1.36, 1.56])
+        keys.append([[4.19617e-5, [3, -0.146667, 0], [3, 0.173333, 0]],
+                     [1.22522, [3, -0.173333, -0.134073], [3, 0.146667, 0.113446]],
+                     [1.33867, [3, -0.146667, 0], [3, 0.0666667, 0]], [1.33867, [3, -0.0666667, 0], [3, 0, 0]]])
+
+        try:
+            print("motion")
+
+            self.motionProxy.angleInterpolationBezier(names, times, keys)
+
+        except BaseException, err:
+            print err
 
 robot = Robot ()
 
 class NAOVoiceRec(ALModule):
     def __init__(self, id, ip, port, wordList, wordSpotting=True):
         super(NAOVoiceRec, self).__init__(id)
+        global robot
+
         self.id = id
         #create the speech recognition proxy
         self.speechRec = ALProxy("ALSpeechRecognition", ip, port)
@@ -1617,6 +1794,8 @@ class NAOVoiceRec(ALModule):
         self.memProx.subscribeToEvent("SpeechDetected", self.id, "speechDetected")
 
         self.dance_num = 0
+
+        #robot.play_audio (sounds_path + "7zenit1.mp3")
 
     def __del__(self):
         self.memProx.unsubscribeToEvent("WordRecognized", self.id)
@@ -1651,12 +1830,12 @@ class NAOVoiceRec(ALModule):
         elif (word_translit == "stoi"):
             robot.stop ()
 
-        #elif (word_translit == "igrai"):
-        #    if (robot.football_audio_playing == False):
-        #        robot.play_audio (sounds_path + "1igrai.mp3")
-        #        robot.football_audio_playing = True
+        elif (word_translit == "igrai"):
+            if (robot.football_audio_playing == False):
+                robot.play_audio (sounds_path + "1igrai.mp3")
+                robot.football_audio_playing = True
 
-        #    robot.play_football ()
+            robot.play_football ()
 
         elif (word_translit == "tantsui"):# or word_translit == "pervii"):
             if (self.dance_num % 3 == 0):
@@ -1694,6 +1873,25 @@ class NAOVoiceRec(ALModule):
         elif (word_translit == "chill"):
             robot.posture ("/rest")
 
+        elif (word_translit == "right"):
+            #x, y, theta, frequency = 0.7, walk_time = 4
+            robot.walk (0, 0, -0.2, walk_time = 3)
+
+        elif (word_translit == "left"):
+            robot.walk (0, 0, 0.2, walk_time = 3)
+
+        elif (word_translit == "turnback"):
+            robot.walk (0, 0, -0.3, walk_time = 15)
+
+        elif (word_translit == "forward"):
+            robot.walk (0.7, 0, 0, walk_time = 3)
+
+        elif (word_translit == "run"):
+            robot.walk (1, 0, 0, frequency = 1, walk_time = 6)
+
+        elif (word_translit == "bow"):
+            robot.bow ()
+
         else:
             print ("reaction to ", word_translit, "not implemented")
 
@@ -1701,15 +1899,17 @@ class NAOVoiceRec(ALModule):
 #wordList = ["да", "нет", "привет"]
 wordList = ['играй', 'конец', 'пенальти', 'лучший', 'удален', 'цска', 'зенит', 'спартак', 'стихотворение', 'бомба',
             'коронавирусную', 'баста', 'басту', 'жиган', 'жигана', 'танцуй', 'первый', 'второй', 'третий', 'четвертый',
-            'поздравь', 'стой', 'встань', 'сядь', 'расслабься']
+            'поздравь', 'стой', 'встань', 'сядь', 'расслабься',
+            'направо', 'право', 'налево', 'лево', 'назад', 'идти', 'иди', 'прямо', 'вперед', 'беги', 'поклонись']
 
 wltranslit = ['igrai', 'konets', 'penalti', 'luchii', 'udalen', 'tssk', 'zenit', 'spartak', 'stih', 'bomba',
               'virus', 'basta', 'basta', 'jigan', 'jigan', 'tantsui', 'pervii', 'vtoroi', 'tretii', 'chetvertii',
-              'pozdrav', 'stoi', 'vstan', 'siad', 'chill']
+              'pozdrav', 'stoi', 'vstan', 'siad', 'chill',
+              'right', 'right', 'left', 'left', 'turnback', 'forward', 'forward', 'forward', 'forward', 'run', 'bow']
 
 wordtomp3 = {'penalti'   : '2litso.mp3',
              'luchii'    : '3kakoiklub.mp3',
-             'tssk' : '6rasskazhi.mp3',
+             'tssk'      : '6rasskazhi.mp3',
              'spartak'   : '8spartak.mp3',
              'zenit'     : '7zenit1.mp3',
              'stih'      : '10giner.mp3',
@@ -1718,13 +1918,6 @@ wordtomp3 = {'penalti'   : '2litso.mp3',
              'basta'     : '11basta.mp3',
              'jigan'     : '11jigan.mp3',
              'pozdrav'   : '14stih.mp3'}
-
-#ip = "10.0.0.7"
-ip_vr = "127.0.0.1"
-port_vr = 9559
-
-broker = ALBroker("pythonBroker", "0.0.0.0", 0, ip_vr, port_vr)
-Test = NAOVoiceRec("Test", ip_vr, port_vr, wordList, False)
 
 class NaoRemoteHTTPRequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
@@ -1812,6 +2005,24 @@ class NaoRemoteHTTPRequestHandler(BaseHTTPRequestHandler):
         elif (action == "/play_football"):
             robot.play_football ()
 
+        elif (action == "/turnright"):
+            robot.walk (0, 0, -0.2, walk_time = 3)
+
+        elif (action == "/turnleft"):
+            robot.walk (0, 0, 0.2, walk_time = 3)
+
+        elif (action == "/turnback"):
+            robot.walk(0, 0, -0.3, walk_time=15)
+
+        elif (action == "/forward"):
+            robot.walk(0.7, 0, 0, walk_time=3)
+
+        elif (action == "/run"):
+            robot.walk(1, 0, 0, frequency=1, walk_time=6)
+
+        elif (action == "/bow"):
+            robot.bow()
+
     def __del__ (self):
         global server
         #server.socket.close()
@@ -1877,5 +2088,13 @@ class MyClass():
             sys.exit(0)
 
 time.sleep (15)
+
+#ip = "10.0.0.7"
+ip_vr = "127.0.0.1"
+port_vr = 9559
+
+broker = ALBroker("pythonBroker", "0.0.0.0", 0, ip_vr, port_vr)
+Test = NAOVoiceRec("Test", ip_vr, port_vr, wordList, False)
+
 myclass = MyClass ()
 
