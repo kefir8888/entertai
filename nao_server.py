@@ -170,7 +170,7 @@ class Robot:
 
         mask_ = cv2.inRange (self.img, tuple (self.lth), tuple (self.hth))
 
-        kernel = np.ones((5, 5), np.uint8)
+        kernel = np.ones((3, 3), np.uint8)
         mask = cv2.erode (mask_, kernel, iterations = 1)
 
         (bbox, success) = find_max_bounding_box(mask)
@@ -185,7 +185,7 @@ class Robot:
             X = 0.0
             Y = 0.0
             rotation_time = 2.0
-            Theta = float(point - 320) / 640 / rotation_time
+            Theta = - float(point - 320) / 500 / rotation_time
             Frequency = 1.0  # low speed
 
             print ("theta" + str(Theta))
@@ -1909,7 +1909,7 @@ wltranslit = ['igrai', 'konets', 'penalti', 'luchii', 'udalen', 'tssk', 'zenit',
 
 wordtomp3 = {'penalti'   : '2litso.mp3',
              'luchii'    : '3kakoiklub.mp3',
-             'tssk'      : '6rasskazhi.mp3',
+             'tssk'      : 'tell_and_hymn.mp3', #'6rasskazhi.mp3',
              'spartak'   : '8spartak.mp3',
              'zenit'     : '7zenit1.mp3',
              'stih'      : '10giner.mp3',
