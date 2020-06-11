@@ -88,13 +88,13 @@ class Robot_state:
         self.lth = [100, 100, 100]
         self.hth = [200, 200, 200]
         
-        #cv2.namedWindow ("trackbars")
-        #cv2.createTrackbar ("rl", "trackbars", 100, 255, lambda n : self.change_lth (0, n))
-        #cv2.createTrackbar ("rh", "trackbars", 200, 255, lambda n : self.change_hth (0, n))
-        #cv2.createTrackbar ("gl", "trackbars", 100, 255, lambda n : self.change_lth (1, n))
-        #cv2.createTrackbar ("gh", "trackbars", 200, 255, lambda n : self.change_hth (1, n))
-        #cv2.createTrackbar ("bl", "trackbars", 100, 255, lambda n : self.change_lth (2, n))
-        #cv2.createTrackbar ("bh", "trackbars", 200, 255, lambda n : self.change_hth (2, n))
+        cv2.namedWindow ("trackbars")
+        cv2.createTrackbar ("rl", "trackbars", 100, 255, lambda n : self.change_lth (0, n))
+        cv2.createTrackbar ("rh", "trackbars", 200, 255, lambda n : self.change_hth (0, n))
+        cv2.createTrackbar ("gl", "trackbars", 100, 255, lambda n : self.change_lth (1, n))
+        cv2.createTrackbar ("gh", "trackbars", 200, 255, lambda n : self.change_hth (1, n))
+        cv2.createTrackbar ("bl", "trackbars", 100, 255, lambda n : self.change_lth (2, n))
+        cv2.createTrackbar ("bh", "trackbars", 200, 255, lambda n : self.change_hth (2, n))
 
     def change_lth (self, ind, new_val):
         self.lth [ind] = new_val
@@ -264,23 +264,28 @@ class Robot_state:
         
         #time.sleep (0.6)
         
-        #local_path = "img.jpg"
+        local_path = "img.jpg"
         #remote_path = "/home/nao/img.jpg"
         
         #self.robot.copy_file_from_robot (remote_path, local_path)
         
-        #img_path = Path (local_path)
+        img_path = Path (local_path)
         
-        #if (img_path.is_file ()):
-        #    image = cv2.imread (local_path)
+        if (img_path.is_file ()):
+            image = cv2.imread (local_path)
             
-        #    mask = cv2.inRange (image, tuple (self.lth), tuple (self.hth))
-        #    mask_3ch = np.zeros_like (image)
-        #    mask_3ch [:, :, 0] = mask [:, :]
-        #    mask_3ch [:, :, 1] = mask [:, :]
-        #    mask_3ch [:, :, 2] = mask [:, :]
+            #mask = cv2.inRange (image, tuple (self.lth), tuple (self.hth))
+            mask_ = cv2.inRange (image, tuple (self.lth), tuple (self.hth))
+
+            kernel = np.ones((3, 3), np.uint8)
+            mask = cv2.erode (mask_, kernel, iterations = 1)
+        
+            mask_3ch = np.zeros_like (image)
+            mask_3ch [:, :, 0] = mask [:, :]
+            mask_3ch [:, :, 1] = mask [:, :]
+            mask_3ch [:, :, 2] = mask [:, :]
             
-        #    cv2.imshow ("mask", np.concatenate ((image, mask_3ch), axis=1))
+            cv2.imshow ("mask", np.concatenate ((image, mask_3ch), axis=1))
         
         #if (self.robot_state == "playing_football"):
         #    self.robot.send_command ("/play_football", "a")
@@ -365,7 +370,7 @@ def main ():
     robot_state = Robot_state (speech_parser, robot, words_processor, connection, dialogue_system)
     
     root = Tk ()
-    root.geometry ("555x445")
+    root.geometry ("730x445")
     
     GUI  = Main_window (root, robot_state)
     

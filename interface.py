@@ -34,11 +34,11 @@ class Main_window:
         self.wiki_button = Button (self.master, text="Википедия", command = self.set_wiki_search, height=3, width = 25)
         self.wiki_button.grid (row=2, column=0)
                 
-        #self.football_button = Button (self.master, text="Футбол", command = self.set_play_football, height=3, width = 25)
-        #self.football_button.grid (row=3, column=0)
+        self.football_button = Button (self.master, text="Футбол", command = self.set_play_football, height=3, width = 25)
+        self.football_button.grid (row=3, column=0)
 
-        #self.football_button = Button (self.master, text="Остановить футбол", command = self.stop_football, height=3, width = 25)
-        #self.football_button.grid (row=4, column=0)
+        self.football_button = Button (self.master, text="Остановить футбол", command = self.stop_football, height=3, width = 25)
+        self.football_button.grid (row=4, column=0)
 
         self.best_button = Button (self.master, text="Лучший футбольный клуб", command = self.best, height=3, width = 25)
         self.best_button.grid (row=5, column=0)
@@ -104,19 +104,104 @@ class Main_window:
         self.udalen_button = Button (self.master, text = "Удален", command = self.udalen, height=3, width = 25)
         self.udalen_button.grid (row=6, column=2)
 
-        #self.send_ths_button = Button (self.master, text = "Синхронизировать зрение", command = self.send_ths, height=3, width = 25)
-        #self.send_ths_button.grid (row=7, column=2)
-        
         self.close_button = Button (self.master, text = "Закрыть", command = self.join_and_exit, height=3, width = 25)
         self.close_button.grid (row=7, column=2)
+
+        #----------------------------------------------------------------------
+
+        self.left_button = Button (self.master, text="Налево", command = self.left, height=3, width = 25)
+        self.left_button.grid (row=0, column=3)
+
+        self.right_button = Button (self.master, text="Направо", command = self.right, height=3, width = 25)
+        self.right_button.grid (row=1, column=3)
+
+        self.turn_button = Button (self.master, text="Развернись", command = self.turn, height=3, width = 25)
+        self.turn_button.grid (row=2, column=3)
+
+        self.forward_button = Button (self.master, text = "Вперед", command = self.forward, height=3, width = 25)
+        self.forward_button.grid (row=3, column=3)
+
+        self.run_button = Button (self.master, text = "Беги", command = self.run, height=3, width = 25)
+        self.run_button.grid (row=4, column=3)
+
+        self.bow_button = Button (self.master, text = "Поклонись", command = self.bow, height=3, width = 25)
+        self.bow_button.grid (row=5, column=3)
+
+        self.send_ths_button = Button (self.master, text = "Синхронизировать зрение", command = self.send_ths, height=3, width = 25)
+        self.send_ths_button.grid (row=6, column=3)        
+
+        self.hymn_button = Button (self.master, text = "Гимн", command = self.hymn, height=3, width = 25)
+        self.hymn_button.grid (row=7, column=3)        
         
         self.robot_state = robot_state_
         
         self.idle ()
-        
-    
+            
     def send_ths (self):
         self.robot_state.send_ths ()
+
+#--------------------------------
+    def left (self):
+        curr = time.time ()
+        
+        command1 = {"type"           : "action",
+                   "execution_time" : curr,
+                   "contents"       : "/turnleft",
+                   "parameter"      : "a"}
+        
+        self.robot_state.add_commands_to_queue ([command1])
+
+    def right (self):
+        curr = time.time ()
+        
+        command1 = {"type"           : "action",
+                   "execution_time" : curr,
+                   "contents"       : "/turnright",
+                   "parameter"      : "a"}
+        
+        self.robot_state.add_commands_to_queue ([command1])
+
+    def turn (self):
+        curr = time.time ()
+        
+        command1 = {"type"           : "action",
+                   "execution_time" : curr,
+                   "contents"       : "/turnback",
+                   "parameter"      : "a"}
+        
+        self.robot_state.add_commands_to_queue ([command1])
+
+    def forward (self):
+        curr = time.time ()
+        
+        command1 = {"type"           : "action",
+                   "execution_time" : curr,
+                   "contents"       : "/forward",
+                   "parameter"      : "a"}
+        
+        self.robot_state.add_commands_to_queue ([command1])
+
+    def run (self):
+        curr = time.time ()
+        
+        command1 = {"type"           : "action",
+                   "execution_time" : curr,
+                   "contents"       : "/run",
+                   "parameter"      : "a"}
+        
+        self.robot_state.add_commands_to_queue ([command1])
+
+    def bow (self):
+        curr = time.time ()
+        
+        command1 = {"type"           : "action",
+                   "execution_time" : curr,
+                   "contents"       : "/bow",
+                   "parameter"      : "a"}
+        
+        self.robot_state.add_commands_to_queue ([command1])
+
+#--------------------------------
     
     def greet (self):
         curr = time.time ()
@@ -228,7 +313,22 @@ class Main_window:
         command1 = {"type"           : "action",
                    "execution_time" : curr,
                    "contents"       : "/play_mp3",
-                   "parameter"      : "6rasskazhi.mp3"}
+                   "parameter"      : "tell_and_hymn.mp3"}
+
+        #command2 = {"type"           : "action",
+        #           "execution_time" : curr + 48,
+        #           "contents"       : "/play_mp3",
+        #           "parameter"      : "6hymn.mp3"}
+        
+        self.robot_state.add_commands_to_queue ([command1])
+
+    def hymn (self):
+        curr = time.time ()
+        
+        command1 = {"type"           : "action",
+                   "execution_time" : curr,
+                   "contents"       : "/play_mp3",
+                   "parameter"      : "6hymn.mp3"}
         
         self.robot_state.add_commands_to_queue ([command1])
 
