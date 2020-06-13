@@ -362,7 +362,7 @@ def main ():
     #freeze_support ()
     #speech_parser.start ()
     
-    robot           = Robot ("192.168.43.169", 9555)
+    robot           = Robot ("192.168.137.150", 9555)
     #robot           = Robot ("10.0.0.102", 9555)
     words_processor = Words_processor ()
     dialogue_system = Dialogue_system  ()
@@ -370,7 +370,7 @@ def main ():
     robot_state = Robot_state (speech_parser, robot, words_processor, connection, dialogue_system)
     
     root = Tk ()
-    root.geometry ("730x445")
+    root.geometry ("730x510")
     
     GUI  = Main_window (root, robot_state)
     
