@@ -287,8 +287,8 @@ class Robot_state:
             
             cv2.imshow ("mask", np.concatenate ((image, mask_3ch), axis=1))
         
-        #if (self.robot_state == "playing_football"):
-        #    self.robot.send_command ("/play_football", "a")
+        if (self.robot_state == "playing_football"):
+            self.robot.send_command ("/play_football", "a")
     
     def add_commands_to_queue (self, commands):
         for command in commands:
