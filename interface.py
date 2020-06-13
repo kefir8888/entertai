@@ -35,10 +35,10 @@ class Main_window:
         self.wiki_button.grid (row=2, column=0)
                 
         self.football_button = Button (self.master, text="Футбол", command = self.set_play_football, height=3, width = 25)
-        self.football_button.grid (row=3, column=0)
+        self.football_button.grid (row=8, column=0)
 
         self.football_button = Button (self.master, text="Остановить футбол", command = self.stop_football, height=3, width = 25)
-        self.football_button.grid (row=4, column=0)
+        self.football_button.grid (row=8, column=1)
 
         self.best_button = Button (self.master, text="Лучший футбольный клуб", command = self.best, height=3, width = 25)
         self.best_button.grid (row=5, column=0)
