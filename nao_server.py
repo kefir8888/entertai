@@ -3379,6 +3379,7 @@ class MyClass():
 
             except:
                 print ("failed to obtain ip")
+                pass
 
             attempts_num += 1
             time.sleep (2)
@@ -3395,15 +3396,28 @@ class MyClass():
             server = httpd
 
             try:
-                #while True:
-                #    time.sleep(1)
-                httpd.serve_forever()
+                while True:
+                    time.sleep(1)
+                    httpd.serve_forever()
 
             except KeyboardInterrupt:
                 print ("Interrupted by user, stopping")
 
                 # self.face_detection.unsubscribe("HumanGreeter")
                 # stop
+                del Test
+                del server
+
+                sys.exit(0)
+
+        else:
+            try:
+                while True:
+                    time.sleep(1)
+
+            except KeyboardInterrupt:
+                print ("Interrupted by user, stopping")
+
                 del Test
                 del server
 
