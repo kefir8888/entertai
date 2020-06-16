@@ -370,7 +370,7 @@ def main ():
     robot_state = Robot_state (speech_parser, robot, words_processor, connection, dialogue_system)
     
     root = Tk ()
-    root.geometry ("730x510")
+    root.geometry ("730x580")
     
     GUI  = Main_window (root, robot_state)
     

@@ -81,6 +81,9 @@ class Main_window:
         self.dance1_button = Button (self.master, text="Танец 1", command = self.dance1, height=3, width = 25)
         self.dance1_button.grid (row=7, column=0)
 
+        self.razminka_button = Button (self.master, text="Разминка", command = self.razminka, height=3, width = 25)
+        self.razminka_button.grid (row=8, column=0)
+
         #----------------------------------------------------------------------
 
         self.dance2_button = Button (self.master, text="Танец 2", command = self.dance2, height=3, width = 25)
@@ -107,6 +110,9 @@ class Main_window:
         self.close_button = Button (self.master, text = "Закрыть", command = self.join_and_exit, height=3, width = 25)
         self.close_button.grid (row=7, column=2)
 
+        self.goal_button = Button (self.master, text = "Гол!", command = self.goal, height=3, width = 25)
+        self.goal_button.grid (row=8, column=2)
+
         #----------------------------------------------------------------------
 
         self.left_button = Button (self.master, text="Налево", command = self.left, height=3, width = 25)
@@ -132,7 +138,10 @@ class Main_window:
 
         self.hymn_button = Button (self.master, text = "Гимн", command = self.hymn, height=3, width = 25)
         self.hymn_button.grid (row=7, column=3)        
-        
+
+        self.prezident_button = Button (self.master, text = "Президент", command = self.prezident, height=3, width = 25)
+        self.prezident_button.grid (row=8, column=3)
+
         self.robot_state = robot_state_
         
         self.idle ()
@@ -141,15 +150,45 @@ class Main_window:
         self.robot_state.send_ths ()
 
 #--------------------------------
-    def left (self):
-        curr = time.time ()
-        
-        command1 = {"type"           : "action",
-                   "execution_time" : curr,
-                   "contents"       : "/turnleft",
-                   "parameter"      : "a"}
-        
-        self.robot_state.add_commands_to_queue ([command1])
+    def left(self):
+        curr = time.time()
+
+        command1 = {"type": "action",
+                    "execution_time": curr,
+                    "contents": "/turnleft",
+                    "parameter": "a"}
+
+        self.robot_state.add_commands_to_queue([command1])
+
+    def razminka(self):
+        curr = time.time()
+
+        command1 = {"type": "action",
+                    "execution_time": curr,
+                    "contents": "/razminka",
+                    "parameter": "a"}
+
+        self.robot_state.add_commands_to_queue([command1])
+
+    def goal(self):
+        curr = time.time()
+
+        command1 = {"type": "action",
+                    "execution_time": curr,
+                    "contents": "/goal",
+                    "parameter": "a"}
+
+        self.robot_state.add_commands_to_queue([command1])
+
+    def prezident(self):
+        curr = time.time()
+
+        command1 = {"type": "action",
+                    "execution_time": curr,
+                    "contents": "/prezident",
+                    "parameter": "a"}
+
+        self.robot_state.add_commands_to_queue([command1])
 
     def right (self):
         curr = time.time ()
